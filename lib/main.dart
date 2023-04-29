@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_and_native_ios_comparison/views/main_view.dart';
+import 'package:flutter_and_native_ios_comparison/ui/main_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,16 +8,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
+    return CupertinoApp(
       title: 'Usporedba Flutter i nativne iOS aplikacije',
       home: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
+        navigationBar: const CupertinoNavigationBar(
           middle: Text(
             'Usporedba Flutter i nativne iOS aplikacije',
             style: TextStyle(fontSize: 15),
           ),
         ),
-        child: MainView(),
+        child: MainScreen(),
       ),
     );
   }

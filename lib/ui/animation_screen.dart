@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'dart:math' as math;
 
-class IntensiveAnimationScreen extends StatefulWidget {
-  const IntensiveAnimationScreen({required this.intensity, super.key});
+class AnimationScreen extends StatefulWidget {
+  const AnimationScreen({required this.intensity, super.key});
 
   final int intensity;
 
   @override
-  _IntensiveAnimationScreenState createState() =>
-      _IntensiveAnimationScreenState();
+  _AnimationScreenState createState() => _AnimationScreenState();
 }
 
-class _IntensiveAnimationScreenState extends State<IntensiveAnimationScreen>
+class _AnimationScreenState extends State<AnimationScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -39,7 +38,7 @@ class _IntensiveAnimationScreenState extends State<IntensiveAnimationScreen>
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: const Text('Lightweight Animation'),
+        middle: const Text('Animacija'),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: _restartAnimation,
