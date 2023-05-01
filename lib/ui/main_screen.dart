@@ -37,7 +37,7 @@ class MainScreen extends StatelessWidget {
               Navigator.of(context).push(
                 CupertinoPageRoute(
                   builder: (context) => AnimationScreen(
-                    intensity: pow(10, value).toInt(),
+                    intensity: (10 - value) * pow(3, value + 2).toInt(),
                   ),
                 ),
               );

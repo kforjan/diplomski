@@ -14,19 +14,23 @@ class AnimationScreen extends StatefulWidget {
 
 class _AnimationScreenState extends State<AnimationScreen>
     with TickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _animation;
+  final List<AnimationController> _animationControllers = [];
+  final List<Animation<double>> _animations = [];
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
-      vsync: this,
-    )..repeat();
+    for (int i = 0; i < widget.intensity; i++) {
+      final animationController = AnimationController(
+        duration: const Duration(milliseconds: 2000),
+        vsync: this,
+      )..repeat();
+      final animation =
+          Tween<double>(begin: 0, end: 2 * pi).animate(animationController);
 
-    _animation = Tween<double>(begin: 0, end: 2 * 3.14159265359)
-        .animate(_animationController);
+      _animationControllers.add(animationController);
+      _animations.add(animation);
+    }
   }
 
   @override
@@ -36,16 +40,33 @@ class _AnimationScreenState extends State<AnimationScreen>
         middle: Text('Animacijas'),
       ),
       child: Center(
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (BuildContext context, Widget? child) {
-            return CustomPaint(
-              size: const Size(200, 200),
-              painter: _CirclePainter(
-                  animationValue: _animation.value,
-                  intensity: widget.intensity),
-            );
-          },
+        child: SizedBox(
+          width: 200,
+          height: 200,
+          child: Stack(
+            children: List.generate(widget.intensity, (i) {
+              final angle = 2 * pi / widget.intensity * i;
+              final xPos = 100 * cos(angle);
+              final yPos = 100 * sin(angle);
+
+              return AnimatedBuilder(
+                animation: _animations[i],
+                builder: (BuildContext context, Widget? child) {
+                  return Transform.rotate(
+                    angle: _animations[i].value,
+                    child: Transform.translate(
+                      offset: Offset(xPos, yPos),
+                      child: child,
+                    ),
+                  );
+                },
+                child: CircleAvatar(
+                  backgroundColor: i % 2 == 0 ? Colors.red : Colors.yellow,
+                  radius: 10,
+                ),
+              );
+            }),
+          ),
         ),
       ),
     );
@@ -53,33 +74,9 @@ class _AnimationScreenState extends State<AnimationScreen>
 
   @override
   void dispose() {
-    _animationController.dispose();
+    for (var controller in _animationControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
-}
-
-class _CirclePainter extends CustomPainter {
-  final double animationValue;
-  final int intensity;
-
-  _CirclePainter({required this.animationValue, required this.intensity});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    for (int i = 0; i < intensity; i++) {
-      final paint = Paint()
-        ..color = i % 2 == 0 ? Colors.red : Colors.yellow
-        ..style = PaintingStyle.fill;
-
-      final angle = 2 * 3.14159265359 / intensity * i + animationValue;
-      final xPos = size.width / 2 + size.width * cos(angle) / 1.3;
-      final yPos = size.height / 2 + size.height * sin(angle) / 1.3;
-
-      canvas.drawCircle(Offset(xPos, yPos), 10, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _CirclePainter oldDelegate) =>
-      oldDelegate.animationValue != animationValue;
 }
