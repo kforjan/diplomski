@@ -1,19 +1,32 @@
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:image_picker/image_picker.dart';
 
-class NativeFeaturesScreen extends StatelessWidget {
+class NativeFeaturesScreen extends StatefulWidget {
+  const NativeFeaturesScreen({Key? key}) : super(key: key);
+
+  @override
+  _NativeFeaturesScreenState createState() => _NativeFeaturesScreenState();
+}
+
+class _NativeFeaturesScreenState extends State<NativeFeaturesScreen> {
   final ImagePicker _picker = ImagePicker();
-
-  NativeFeaturesScreen({super.key});
+  final Stopwatch _stopwatch = Stopwatch();
 
   void _onFeatureButtonPressed(BuildContext context, String featureName) async {
     print('Feature button pressed: $featureName');
 
     if (featureName == 'GPS') {
+      _stopwatch.reset();
+      _stopwatch.start();
+
       Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+          desiredAccuracy: LocationAccuracy.lowest);
+
+      _stopwatch.stop();
       print('Trenutna lokacija: $position');
+      print(
+          'Vrijeme za dohvaćanje položaja: ${_stopwatch.elapsedMicroseconds} µs');
     } else if (featureName == 'Kamera') {
       final pickedFile = await _picker.pickImage(source: ImageSource.camera);
       if (pickedFile != null) {

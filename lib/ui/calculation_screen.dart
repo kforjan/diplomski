@@ -3,48 +3,47 @@ import 'package:flutter/cupertino.dart';
 class CalculationScreen extends StatefulWidget {
   final int intensity;
 
-  const CalculationScreen({super.key, required this.intensity});
+  const CalculationScreen({required this.intensity, Key? key})
+      : super(key: key);
 
   @override
   _CalculationScreenState createState() => _CalculationScreenState();
 }
 
 class _CalculationScreenState extends State<CalculationScreen> {
-  BigInt? _currentNumber;
+  double? _currentNumber;
   bool _calculating = false;
-  Stopwatch? _stopwatch;
+  final Stopwatch _stopwatch = Stopwatch();
 
-  BigInt _fibonacci(int n) {
-    BigInt a = BigInt.zero, b = BigInt.one, temp;
+  double _calculate(int n) {
+    double temp = 0;
     for (int i = 0; i < n; i++) {
-      temp = a + b;
-      a = b;
-      b = temp;
+      temp = temp + 2;
+      temp = temp / 4;
+      temp = temp * 2;
     }
-    return a;
+    return temp;
   }
 
-  void _startCalculation() async {
-    _stopwatch = Stopwatch()..start();
+  void _startCalculation() {
+    _stopwatch
+      ..reset()
+      ..start();
     setState(() {
       _calculating = true;
     });
-    for (int i = 0; i < widget.intensity; i++) {
-      final result = _fibonacci(i);
-      setState(() {
-        _currentNumber = result;
-      });
-    }
+    final result = _calculate(widget.intensity);
+    _currentNumber = result;
+
     setState(() {
       _calculating = false;
     });
-    _stopwatch?.stop();
+    _stopwatch.stop();
   }
 
   @override
   Widget build(BuildContext context) {
-    final timeElapsed =
-        _stopwatch != null ? _stopwatch!.elapsed.inMicroseconds : 0;
+    final timeElapsed = _stopwatch.elapsedMicroseconds;
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
         middle: Text('Kalkulacija'),
@@ -74,9 +73,16 @@ class _CalculationScreenState extends State<CalculationScreen> {
                             fontSize: 14, fontWeight: FontWeight.bold),
                       ),
                 const SizedBox(height: 20),
-                Text(
-                  '${_currentNumber ?? '-'}',
-                  style: const TextStyle(fontSize: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Center(
+                    child: Text(
+                      _currentNumber == null
+                          ? '-'
+                          : 'Izvedeno ${widget.intensity}  operacija zbrajanja, dijeljenja i množenja.',
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 CupertinoButton.filled(

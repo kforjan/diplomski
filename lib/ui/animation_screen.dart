@@ -1,95 +1,85 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
-import 'dart:math' as math;
+import 'package:flutter/material.dart';
 
 class AnimationScreen extends StatefulWidget {
-  const AnimationScreen({required this.intensity, super.key});
-
   final int intensity;
+
+  const AnimationScreen({super.key, required this.intensity});
 
   @override
   _AnimationScreenState createState() => _AnimationScreenState();
 }
 
 class _AnimationScreenState extends State<AnimationScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+    with TickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 5),
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 2000),
       vsync: this,
     )..repeat();
-  }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _restartAnimation() {
-    _controller.reset();
-    _controller.repeat();
+    _animation = Tween<double>(begin: 0, end: 2 * 3.14159265359)
+        .animate(_animationController);
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: const Text('Animacija'),
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: _restartAnimation,
-          child: const Icon(
-            CupertinoIcons.restart,
-            size: 24,
-          ),
-        ),
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text('Animacijas'),
       ),
-      child: SafeArea(
-        child: Center(
-          child: AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return CustomPaint(
-                size: Size.infinite,
-                painter: IntensivePainter(_controller.value, widget.intensity),
-              );
-            },
-          ),
+      child: Center(
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (BuildContext context, Widget? child) {
+            return CustomPaint(
+              size: const Size(200, 200),
+              painter: _CirclePainter(
+                  animationValue: _animation.value,
+                  intensity: widget.intensity),
+            );
+          },
         ),
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 }
 
-class IntensivePainter extends CustomPainter {
-  final double progress;
-  final int lineCount;
+class _CirclePainter extends CustomPainter {
+  final double animationValue;
+  final int intensity;
 
-  IntensivePainter(this.progress, this.lineCount);
+  _CirclePainter({required this.animationValue, required this.intensity});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = CupertinoColors.activeBlue;
-    final centerX = size.width / 2;
-    final centerY = size.height / 2;
+    for (int i = 0; i < intensity; i++) {
+      final paint = Paint()
+        ..color = i % 2 == 0 ? Colors.red : Colors.yellow
+        ..style = PaintingStyle.fill;
 
-    for (int i = 0; i < lineCount; i++) {
-      double angle = (i + progress * lineCount) % lineCount * math.pi / 180;
-      double innerRadius = 100.0;
-      double outerRadius = 200.0;
-      double x1 = centerX + innerRadius * math.cos(angle);
-      double y1 = centerY + innerRadius * math.sin(angle);
-      double x2 = centerX + outerRadius * math.cos(angle);
-      double y2 = centerY + outerRadius * math.sin(angle);
-      canvas.drawLine(Offset(x1, y1), Offset(x2, y2), paint);
+      final angle = 2 * 3.14159265359 / intensity * i + animationValue;
+      final xPos = size.width / 2 + size.width * cos(angle) / 1.3;
+      final yPos = size.height / 2 + size.height * sin(angle) / 1.3;
+
+      canvas.drawCircle(Offset(xPos, yPos), 10, paint);
     }
   }
 
   @override
-  bool shouldRepaint(covariant IntensivePainter oldDelegate) =>
-      oldDelegate.progress != progress || oldDelegate.lineCount != lineCount;
+  bool shouldRepaint(covariant _CirclePainter oldDelegate) =>
+      oldDelegate.animationValue != animationValue;
 }

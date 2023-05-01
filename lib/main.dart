@@ -11,14 +11,13 @@ class MyApp extends StatelessWidget {
     return CupertinoApp(
       title: 'Usporedba Flutter i nativne iOS aplikacije',
       home: CupertinoPageScaffold(
-        navigationBar: const CupertinoNavigationBar(
-          middle: Text(
-            'Usporedba Flutter i nativne iOS aplikacije',
-            style: TextStyle(fontSize: 15),
+          navigationBar: const CupertinoNavigationBar(
+            middle: Text(
+              'Usporedba Flutter i nativne iOS aplikacije',
+              style: TextStyle(fontSize: 15),
+            ),
           ),
-        ),
-        child: MainScreen(),
-      ),
+          child: MainScreen()),
     );
   }
 }

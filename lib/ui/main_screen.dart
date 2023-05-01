@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_and_native_ios_comparison/data/local/database.dart';
 import 'package:flutter_and_native_ios_comparison/ui/animation_screen.dart';
-import 'package:flutter_and_native_ios_comparison/ui/database_screen.dart';
 import 'package:flutter_and_native_ios_comparison/ui/calculation_screen.dart';
+import 'package:flutter_and_native_ios_comparison/ui/database_screen.dart';
 import 'package:flutter_and_native_ios_comparison/ui/native_feature_screen.dart';
 import 'package:flutter_and_native_ios_comparison/ui/scalability_screen.dart';
 import 'package:flutter_and_native_ios_comparison/widgets/slider_main_list_item.dart';
@@ -25,7 +25,7 @@ class MainScreen extends StatelessWidget {
               Navigator.of(context).push(
                 CupertinoPageRoute(
                   builder: (context) => ScalabilityScreen(
-                    intensity: pow(5, value).toInt(),
+                    intensity: pow(7, value).toInt(),
                   ),
                 ),
               );
@@ -44,12 +44,12 @@ class MainScreen extends StatelessWidget {
             },
           ),
           MainScreenItem(
-            title: 'Kalkulacija Fibonaccijevih brojeva',
+            title: 'Računanje - CPU opterečenje',
             onStart: (value) {
               Navigator.of(context).push(
                 CupertinoPageRoute(
                   builder: (context) => CalculationScreen(
-                    intensity: pow(7, value).toInt(),
+                    intensity: pow(10, value).toInt() * 10000,
                   ),
                 ),
               );
@@ -74,7 +74,7 @@ class MainScreen extends StatelessWidget {
             onStart: (value) {
               Navigator.of(context).push(
                 CupertinoPageRoute(
-                  builder: (context) => NativeFeaturesScreen(),
+                  builder: (context) => const NativeFeaturesScreen(),
                 ),
               );
             },
